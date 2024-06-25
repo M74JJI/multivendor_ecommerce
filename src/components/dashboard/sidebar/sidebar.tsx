@@ -8,12 +8,20 @@ import { currentUser } from "@clerk/nextjs/server";
 import Logo from "@/components/shared/logo";
 import UserInfo from "./user-info";
 import SidebarNavAdmin from "./nav-admin";
+import SidebarNavSeller from "./nav-seller";
 
 // Menu links
-import { adminDashboardSidebarOptions } from "@/constants/data";
+import {
+  SellerDashboardSidebarOptions,
+  adminDashboardSidebarOptions,
+} from "@/constants/data";
+
+// Prisma models
+import { Store } from "@prisma/client";
 
 interface SidebarProps {
   isAdmin?: boolean;
+  stores?: Store[];
 }
 
 const Sidebar: FC<SidebarProps> = async ({ isAdmin }) => {
@@ -23,7 +31,11 @@ const Sidebar: FC<SidebarProps> = async ({ isAdmin }) => {
       <Logo width="100%" height="180px" />
       <span className="mt-3" />
       {user && <UserInfo user={user} />}
-      {isAdmin && <SidebarNavAdmin menuLinks={adminDashboardSidebarOptions} />}
+      {isAdmin ? (
+        <SidebarNavAdmin menuLinks={adminDashboardSidebarOptions} />
+      ) : (
+        <SidebarNavSeller menuLinks={SellerDashboardSidebarOptions} />
+      )}
     </div>
   );
 };
