@@ -39,9 +39,9 @@ export const upsertStore = async (store: Partial<Store>) => {
           {
             OR: [
               { name: store.name },
+              { email: store.email },
+              { phone: store.phone },
               { url: store.url },
-              { phone: store.phone },
-              { phone: store.phone },
             ],
           },
           {
