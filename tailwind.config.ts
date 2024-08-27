@@ -75,6 +75,9 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      backgroundImage: {
+        home: "url(/public/assets/images/home-wallpaper.webp)",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

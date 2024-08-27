@@ -11,6 +11,7 @@ import {
   InventoryIcon,
   CouponIcon,
   ShippingIcon,
+  OfferIcon,
 } from "@/components/dashboard/icons";
 
 export const icons = [
@@ -73,5 +74,10 @@ export const icons = [
     label: "shipping",
     value: "shipping",
     path: ShippingIcon,
+  },
+  {
+    label: "Offer",
+    value: "offer",
+    path: OfferIcon,
   },
 ];
