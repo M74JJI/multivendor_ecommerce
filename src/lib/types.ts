@@ -23,6 +23,7 @@ export type ProductWithVariantType = {
   variantDescription: string;
   images: { url: string }[];
   categoryId: string;
+  offerTagId: string;
   subCategoryId: string;
   isSale: boolean;
   brand: string;

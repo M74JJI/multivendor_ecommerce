@@ -90,9 +90,12 @@ export const upsertProduct = async (
       sku: product.sku,
       keywords: product.keywords.join(","),
       images: {
-        create: product.images.map((image) => ({
+        create: product.images.map((image, index) => ({
           url: image.url,
           alt: image.url.split("/").pop() || "",
+          createdAt: product.createdAt, // Ensuring the image creation time is consistent
+          updatedAt: product.updatedAt, // Ensuring the image update time is consistent
+          order: index, // Add order to maintain the original input sequence
         })),
       },
       colors: {
@@ -251,7 +254,7 @@ export const getAllStoreProducts = async (storeUrl: string) => {
       subCategory: true,
       variants: {
         include: {
-          images: true,
+          images: { orderBy: { order: "asc" } },
           colors: true,
           sizes: true,
         },

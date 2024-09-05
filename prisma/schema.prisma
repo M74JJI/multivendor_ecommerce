@@ -118,8 +118,8 @@ model Product {
   subCategoryId String
   subCategory   SubCategory @relation("SubCategoryToProduct", fields: [subCategoryId], references: [id])
 
-  offerTagId String
-  offerTag   OfferTag @relation("OfferTagToProduct", fields: [offerTagId], references: [id])
+  offerTagId String?
+  offerTag   OfferTag? @relation("OfferTagToProduct", fields: [offerTagId], references: [id])
 
   @@index([storeId])
   @@index([categoryId])
@@ -169,6 +169,8 @@ model ProductVariantImage {
   id  String @id @default(uuid())
   url String
   alt String @default("")
+
+  order Int?
 
   productVariantId String
   productVariant   ProductVariant @relation("ProductVariantToVariantImage", fields: [productVariantId], references: [id])

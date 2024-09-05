@@ -27,6 +27,7 @@ export default async function AdminSubCategoriesPage() {
         </>
       }
       modalChildren={<SubCategoryDetails categories={categories} />}
+      newTabLink="/dashboard/admin/subCategories/new"
       filterValue="name"
       data={subCategories}
       searchPlaceholder="Search subCategory name..."
