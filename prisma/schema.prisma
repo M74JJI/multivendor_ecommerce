@@ -79,11 +79,14 @@ model Store {
   status                 StoreStatus @default(PENDING)
   averageRating          Float       @default(0)
   featured               Boolean     @default(false)
-  returnPolicy           String?
-  defaultShippingService String?
-  defaultShippingFees    Float?
-  defaultDeliveryTimeMin Int?
-  defaultDeliveryTimeMax Int?
+  returnPolicy           String
+  defaultShippingService           String? @default("")
+  defaultShippingFeePerItem Float @default(0)
+  defaultShippingFeeForSecondItem Float @default(0)
+  defaultShippingFeePerKg Float @default(0)
+  defaultShippingFeeForAll Float @default(0)
+  defaultDeliveryTimeMin Int
+  defaultDeliveryTimeMax Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -99,7 +102,7 @@ model Store {
 model Product {
   id          String @id @default(uuid())
   name        String
-  description String
+  description String @db.LongText
   slug        String @unique
   brand       String
   rating      Float  @default(0)
@@ -110,7 +113,9 @@ model Product {
   storeId String
   store   Store  @relation("StoreToProduct", fields: [storeId], references: [id])
 
-  variants ProductVariant[] @relation("ProductToProductVariant")
+  variants  ProductVariant[] @relation("ProductToProductVariant")
+  specs     Spec[]           @relation("ProductSpec")
+  questions Question[]       @relation("ProductQuestion")
 
   categoryId String
   category   Category @relation("CategoryToProduct", fields: [categoryId], references: [id])
@@ -130,11 +135,13 @@ model Product {
 model ProductVariant {
   id                 String  @id @default(uuid())
   variantName        String
-  variantDescription String
+  variantDescription String? @db.LongText
+  variantImage       String
   slug               String  @unique
   isSale             Boolean @default(false)
-  keywords           String
+  saleEndDate        String?
   sku                String
+  keywords           String
 
   productId String
   product   Product @relation("ProductToProductVariant", fields: [productId], references: [id])
@@ -142,6 +149,7 @@ model ProductVariant {
   sizes  Size[]                @relation("ProductVariantSizes")
   images ProductVariantImage[] @relation("ProductVariantToVariantImage")
   colors Color[]               @relation("ProductVariantColors")
+  specs  Spec[]                @relation("ProductVariantSpec")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -193,14 +201,45 @@ model Color {
 
   @@index([productVariantId])
 }
+
 model OfferTag {
   id   String @id @default(uuid())
   name String
-  url String
+  url  String
 
   products Product[] @relation("OfferTagToProduct")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+}
 
+model Spec {
+  id    String @id @default(uuid())
+  name  String
+  value String
+
+  productId String?
+  product   Product? @relation("ProductSpec", fields: [productId], references: [id], onDelete: Cascade)
+
+  variantId String?
+  variant   ProductVariant? @relation("ProductVariantSpec", fields: [variantId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@index([productId])
+  @@index([variantId])
+}
+
+model Question {
+  id String @id @default(uuid())
+
+  question String
+  answer   String
+
+  productId String
+  product   Product @relation("ProductQuestion", fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
