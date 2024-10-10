@@ -1,6 +1,13 @@
-import { getAllStoreProducts } from "@/queries/product";
+import { getAllStoreProducts, getProducts } from "@/queries/product";
+import { getStoreDefaultShippingDetails } from "@/queries/store";
 import { getAllSubCategories } from "@/queries/subCategory";
-import { Prisma } from "@prisma/client";
+import {
+  Prisma,
+  ProductVariantImage,
+  ShippingRate,
+  Size,
+} from "@prisma/client";
+import countries from "@/data/countries.json";
 
 export interface DashboardSidebarMenuInterface {
   label: string;
@@ -44,3 +51,40 @@ export type ProductWithVariantType = {
 export type StoreProductType = Prisma.PromiseReturnType<
   typeof getAllStoreProducts
 >[0];
+
+// Store default shipping details
+export type StoreDefaultShippingType = Prisma.PromiseReturnType<
+  typeof getStoreDefaultShippingDetails
+>;
+
+export type CountryWithShippingRatesType = {
+  countryId: string;
+  countryName: string;
+  shippingRate: ShippingRate;
+};
+
+export interface Country {
+  name: string;
+  code: string;
+  city: string;
+  region: string;
+}
+
+export type SelectMenuOption = (typeof countries)[number];
+
+export type ProductType = Prisma.PromiseReturnType<
+  typeof getProducts
+>["products"][0];
+
+export type VariantSimplified = {
+  variantId: string;
+  variantSlug: string;
+  variantName: string;
+  images: ProductVariantImage[];
+  sizes: Size[];
+};
+
+export type VariantImageType = {
+  url: string;
+  image: string;
+};

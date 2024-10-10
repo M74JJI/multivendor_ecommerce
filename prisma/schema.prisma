@@ -79,14 +79,14 @@ model Store {
   status                 StoreStatus @default(PENDING)
   averageRating          Float       @default(0)
   featured               Boolean     @default(false)
-  returnPolicy           String
-  defaultShippingService           String? @default("")
-  defaultShippingFeePerItem Float @default(0)
-  defaultShippingFeeForSecondItem Float @default(0)
-  defaultShippingFeePerKg Float @default(0)
-  defaultShippingFeeForAll Float @default(0)
-  defaultDeliveryTimeMin Int
-  defaultDeliveryTimeMax Int
+  returnPolicy           String  @default("Return in 30 days.")
+  defaultShippingService String  @default("International Delivery")
+  defaultShippingFeePerItem    Float @default(0)
+  defaultShippingFeeForAdditionalItem    Float @default(0)
+  defaultShippingFeePerKg    Float @default(0)
+  defaultShippingFeeFixed    Float @default(0)
+  defaultDeliveryTimeMin Int  @default(7)
+  defaultDeliveryTimeMax Int  @default(31)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -95,6 +95,7 @@ model Store {
   user   User   @relation("UserStores", fields: [userId], references: [id])
 
   products Product[] @relation("StoreToProduct")
+  shippingRates ShippingRate[] @relation("StoreShippingRates")
 
   @@index([userId])
 }
@@ -106,6 +107,7 @@ model Product {
   slug        String @unique
   brand       String
   rating      Float  @default(0)
+  sales      Int  @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -142,6 +144,7 @@ model ProductVariant {
   saleEndDate        String?
   sku                String
   keywords           String
+  sales      Int  @default(0)
 
   productId String
   product   Product @relation("ProductToProductVariant", fields: [productId], references: [id])
@@ -242,4 +245,50 @@ model Question {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+
+  @@index([productId])
+}
+
+
+
+model Country{
+  id String @id @default(uuid())
+  name String @unique
+  code String  @unique
+
+
+  shippingRates ShippingRate[] @relation("CountryShippingRates")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+}
+
+
+
+model ShippingRate{
+  id String @id @default(uuid())
+
+  shippingService String  
+  shippingFeePerItem    Float 
+  shippingFeeForAdditionalItem    Float 
+  shippingFeePerKg    Float 
+  shippingFeeFixed    Float
+  deliveryTimeMin Int  
+  deliveryTimeMax Int
+  returnPolicy  String
+
+  countryId String
+  country Country @relation("CountryShippingRates",fields: [countryId],references: [id])
+
+  storeId String
+  store Store @relation("StoreShippingRates",fields: [storeId],references: [id])
+
+
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@index([countryId])
+  @@index([storeId])
 }

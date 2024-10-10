@@ -11,8 +11,17 @@ import { OfferTag } from "@prisma/client";
 export const getAllOfferTags = async () => {
   // Retrieve all offer tags from the database
   const offerTgas = await db.offerTag.findMany({
+    include: {
+      products: {
+        select: {
+          id: true,
+        },
+      },
+    },
     orderBy: {
-      updatedAt: "asc",
+      products: {
+        _count: "desc", // Order by the count of associated products in descending order
+      },
     },
   });
   return offerTgas;
@@ -111,7 +120,6 @@ export const getOfferTag = async (offerTagId: string) => {
 // Parameters:
 //   - offerTagId: The ID of the offer tag to be deleted.
 // Returns: A success message if the offer tag is deleted, or an error if it fails.
-
 export const deleteOfferTag = async (offerTagId: string) => {
   try {
     // Get current user
